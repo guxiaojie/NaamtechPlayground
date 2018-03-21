@@ -51,6 +51,14 @@ class DetailsViewController: UIViewController {
         }
     }
     
+    func covertStringToArray(_ string: String) -> Array<Character> {
+        var chars:Array<Character> = []
+        for c in string {
+            chars.append(c)
+        }
+        return chars;
+    }
+    
     //MARK: Problem 1 find the postion of a
     func position() {
         guard let targetString = textField.text else{
@@ -59,11 +67,11 @@ class DetailsViewController: UIViewController {
         }
         //convert string to Array<Character>
         //I didn't use lowercased(), cause we are looking for 'a' instead of 'A'
-        let characters: Array = Array(targetString)
-        //flag postion
-        var position: Int = 0
+        //Array(targetString) works well, but it's a built in function
+        //let characters: Array = Array(targetString)
+        let characters:Array<Character> = covertStringToArray(targetString)
         //use recursion to find 'a'
-        resursionToFindA(characters, &position)
+        let position: Int = resursionToFindA(characters)
         //if postion = -1 means N/A
         if position > -1 {
             resultLabel.text = "Position: \(position + 1)"
@@ -72,22 +80,15 @@ class DetailsViewController: UIViewController {
         }
     }
     
-    func resursionToFindA(_ input: Array<Character>, _ index: inout Int){
-        if index < input.count && index >= 0 {
+    func resursionToFindA(_ input: Array<Character>, _ index:  Int = 0) -> Int{
+        if index < input.count {
             if input[index] != "a" {
                 print("search for 'a' at index: \(index)")
-                index += 1
-                resursionToFindA(input, &index)
-            } else {
-                print("'a' is at index: \(index) (start from 0), jump out resursion")
-                //stop resursion by using Int.max
-                var stopResursion = Int.max
-                resursionToFindA(input, &stopResursion)
+                return resursionToFindA(input, index + 1)
             }
-        } else {
-            //show N/A by using -1
-            index = -1
+            return index
         }
+        return -1
     }
 
     //MARK: Problem 2 the report
@@ -152,7 +153,10 @@ class DetailsViewController: UIViewController {
             return
         }
         let infix = Infix(input: targetString)
-        print("infix notation is:\(infix.expression)")
-        calculate(expression: &infix.expression)
+        print("\n infix notation is:\(infix.expression)")
+        var rpn = reversePolishNotation(expression: infix.expression)
+        print("\n postfix notation is:\(rpn)")
+        let result = calculate(expression: &rpn)
+        resultLabel.text = String(describing: result)
     }
 }

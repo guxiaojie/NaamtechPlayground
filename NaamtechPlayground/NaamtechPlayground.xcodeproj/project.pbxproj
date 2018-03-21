@@ -14,7 +14,7 @@
 		C603EF972060CE4700EDC1A9 /* TitleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603EF962060CE4700EDC1A9 /* TitleCollectionViewCell.swift */; };
 		C603EF9C2060D52D00EDC1A9 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603EF9A2060D52D00EDC1A9 /* DetailsViewController.swift */; };
 		C603EF9D2060D52D00EDC1A9 /* DetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C603EF9B2060D52D00EDC1A9 /* DetailsViewController.xib */; };
-		C6791B8F2061DACA00016D76 /* Caculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6791B8E2061DACA00016D76 /* Caculator.swift */; };
+		C6791B8F2061DACA00016D76 /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6791B8E2061DACA00016D76 /* Calculate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,7 @@
 		C603EF962060CE4700EDC1A9 /* TitleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleCollectionViewCell.swift; sourceTree = "<group>"; };
 		C603EF9A2060D52D00EDC1A9 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		C603EF9B2060D52D00EDC1A9 /* DetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsViewController.xib; sourceTree = "<group>"; };
-		C6791B8E2061DACA00016D76 /* Caculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Caculator.swift; sourceTree = "<group>"; };
+		C6791B8E2061DACA00016D76 /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				C603EF762060C7AA00EDC1A9 /* AppDelegate.swift */,
 				C603EF782060C7AA00EDC1A9 /* ViewController.swift */,
 				C603EF9A2060D52D00EDC1A9 /* DetailsViewController.swift */,
-				C6791B8E2061DACA00016D76 /* Caculator.swift */,
+				C6791B8E2061DACA00016D76 /* Calculate.swift */,
 				C603EF9B2060D52D00EDC1A9 /* DetailsViewController.xib */,
 				C603EF962060CE4700EDC1A9 /* TitleCollectionViewCell.swift */,
 				C603EF7D2060C7AA00EDC1A9 /* Assets.xcassets */,
@@ -208,7 +208,7 @@
 				C603EF792060C7AA00EDC1A9 /* ViewController.swift in Sources */,
 				C603EF772060C7AA00EDC1A9 /* AppDelegate.swift in Sources */,
 				C603EF9C2060D52D00EDC1A9 /* DetailsViewController.swift in Sources */,
-				C6791B8F2061DACA00016D76 /* Caculator.swift in Sources */,
+				C6791B8F2061DACA00016D76 /* Calculate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,6 +33,20 @@ enum OperatorType: CustomStringConvertible {
     }
 }
 
+enum Error: CustomStringConvertible {
+    case DivZero
+    case InputMissing
+    
+    var description: String {
+        switch self {
+        case .DivZero:
+            return "Error: Divide by zero"
+        case .InputMissing:
+            return "Error: Function input missing"
+        }
+    }
+}
+
 struct OperatorToken {
     let operatorType: OperatorType
     
@@ -129,17 +143,14 @@ public func reversePolishNotation(expression: [Any]) -> [Any] {
     while tokenStack.items.count > 0 {
         reversePolishNotation.append(tokenStack.pop())
     }
-    
-    print(tokenStack)
-    print(reversePolishNotation)
-    
     return reversePolishNotation
     
 }
 
-func calculate(expression: inout [Any]) {
+func calculate(expression: inout [Any]) -> Any{
     var i = 0
     var result: Double = 0
+    var error: String = ""
     while i < expression.count {
         let token = expression[i]
         
@@ -155,30 +166,37 @@ func calculate(expression: inout [Any]) {
                     case .Multiply:
                         result = left * right
                     case .Divide:
-                        result = left / right
+                        if right == 0 {
+                            return Error.DivZero.description
+                        } else {
+                            result = left / right
+                        }
                     case .Modulus:
                         result = left.truncatingRemainder(dividingBy: right)
                     }
                     
-                    //                    expression.remove(at: i - 1)
-                    //                    expression.remove(at: i - 2)
+                    //expression.remove(at: i - 1)
+                    //expression.remove(at: i - 2)
                     //expression.remove(at: i)
-                    let range = i-2..<i-1
+                    let range = i-2..<i+1
                     expression.removeSubrange(range)
-                    expression.insert(result, at: i - 2)
                     
-                    break;
+                    //finishing calculating all operators
+                    if expression.count == 0 {
+                        return result
+                    } else {
+                        expression.insert(result, at: i - 2)
+                        print("result is \(result)")
+                        
+                        return calculate(expression: &expression)
+                    }
                 }
-                
-                
             } else {
-                expression.removeAll()
-                break;
+                var a = [Any]()
+                return calculate(expression: &a)
             }
         }
         i += 1
     }
-    if expression.count >= 3 {
-        calculate(expression: &expression)
-    }
+    return Error.InputMissing.description
 }
