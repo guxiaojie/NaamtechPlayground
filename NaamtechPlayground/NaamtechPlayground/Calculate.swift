@@ -36,11 +36,14 @@ enum OperatorType: CustomStringConvertible {
 enum Error: CustomStringConvertible {
     case DivZero
     case InputMissing
+    case Syntax
     
     var description: String {
         switch self {
         case .DivZero:
-            return "Error: Divide by zero"
+            return "Error: Division by zero"
+        case .Syntax:
+            return "Error: Syntax Error"
         case .InputMissing:
             return "Error: Function input missing"
         }
@@ -77,6 +80,7 @@ struct Token {
 //get infix notation
 public class Infix {
     var expression = [Any]()
+    var error: Error?
     init(input: String?) {
         guard input != nil else {
             return
@@ -88,6 +92,8 @@ public class Infix {
         for char in array {
             if Double(char) != nil {
                 expression.append(Double(char)!)
+            } else if char.count > 1 {
+                error = Error.Syntax
             } else {
                 switch char {
                 case "+":
@@ -186,8 +192,6 @@ func calculate(expression: inout [Any]) -> Any{
                         return result
                     } else {
                         expression.insert(result, at: i - 2)
-                        print("result is \(result)")
-                        
                         return calculate(expression: &expression)
                     }
                 }
@@ -198,5 +202,5 @@ func calculate(expression: inout [Any]) -> Any{
         }
         i += 1
     }
-    return Error.InputMissing.description
+    return Error.Syntax.description
 }
