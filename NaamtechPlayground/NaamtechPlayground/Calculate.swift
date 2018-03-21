@@ -1,5 +1,5 @@
 
-
+// Stack
 struct Stack<Element> {
     var items = [Element]()
     mutating func push(_ item: Element) {
@@ -10,29 +10,7 @@ struct Stack<Element> {
     }
 }
 
-enum OperatorType: CustomStringConvertible {
-    case Add
-    case Subtract
-    case Multiply
-    case Divide
-    case Modulus
-    
-    var description: String {
-        switch self {
-        case .Add:
-            return "+"
-        case .Subtract:
-            return "-"
-        case .Multiply:
-            return "*"
-        case .Divide:
-            return "/"
-        case .Modulus:
-            return "%"
-        }
-    }
-}
-
+// Error
 enum Error: CustomStringConvertible {
     case DivZero
     case InputMissing
@@ -50,6 +28,36 @@ enum Error: CustomStringConvertible {
     }
 }
 
+// OperatorType
+enum OperatorType: CustomStringConvertible {
+    case Add
+    case Subtract
+    case Multiply
+    case Divide
+    case Modulus
+    case Space
+    case Unsupport
+    
+    var description: String {
+        switch self {
+        case .Add:
+            return "+"
+        case .Subtract:
+            return "-"
+        case .Multiply:
+            return "*"
+        case .Divide:
+            return "/"
+        case .Modulus:
+            return "%"
+        case .Space:
+            return " "
+        case .Unsupport:
+            return ""
+        }
+    }
+}
+
 struct OperatorToken {
     let operatorType: OperatorType
     
@@ -63,21 +71,32 @@ struct OperatorToken {
             return 0
         case .Divide, .Multiply, .Modulus:
             return 5
+        default:
+            return 0
         }
     }
 }
 
-struct Token {
-    var operand: Double
-    var operatorToken: OperatorType
-    
-    init(operand: Double, operatorToke: OperatorType) {
-        self.operand = operand
-        self.operatorToken = operatorToke
+func parseOperator(_ input : Character) -> OperatorType {
+    switch input {
+    case "+":
+        return .Add
+    case "-":
+        return .Subtract
+    case "x":
+        return .Multiply
+    case "/":
+        return .Divide
+    case "%":
+        return .Modulus
+    case " ":
+        return .Space
+    default:
+        return .Unsupport
     }
 }
 
-//get infix notation
+// Infix notation
 public class Infix {
     var expression = [Any]()
     var error: Error?
@@ -88,29 +107,64 @@ public class Infix {
         guard input!.count != 0 else {
             return
         }
-        let array = Array(input!.split(separator: " "))
-        for char in array {
-            if Double(char) != nil {
-                expression.append(Double(char)!)
-            } else if char.count > 1 {
-                error = Error.Syntax
-            } else {
-                switch char {
-                case "+":
-                    expression.append(OperatorToken(.Add))
-                case "-":
-                    expression.append(OperatorToken(.Subtract))
-                case "x":
-                    expression.append(OperatorToken(.Multiply))
-                case "/":
-                    expression.append(OperatorToken(.Divide))
-                case "%":
-                    expression.append(OperatorToken(.Modulus))
-                default:
-                    print("I don't know this token")
+        
+        //built in function .split(separator: " ")
+        //let array = Array(input!.split(separator: " "))
+        let array = parse(input!)
+        guard array != nil else {
+            return
+        }
+        expression = array!
+    }
+    
+    func parse(_ input : String) -> Array<Any>? {
+        var characters : Array<Any> = []
+        var lastNumberCharacter : String = ""
+        let newInput = input + " "
+        var lastIsOperator = false
+        var isNegative = false
+        for character in newInput {
+            //get numbers
+            if (character >= "0" && character <= "9") {
+                lastNumberCharacter += String(character)
+                continue
+            }
+            if lastNumberCharacter != "" {
+                let value = Double(lastNumberCharacter)
+                if (value != nil) {
+                    characters.append(value! * (isNegative ? -1:1))
+                    lastIsOperator = false
+                    isNegative = false
+                } else {
+                    return nil
                 }
             }
+            
+            // Get operation type from string
+            let op = parseOperator(character)
+            if op == .Unsupport {
+                return nil
+            }
+            
+            // Rest lastNumberCharacter
+            lastNumberCharacter = ""
+            
+            // Check if there is no Space
+            if op != .Space {
+                if lastIsOperator {
+                    // Check if this is a negative
+                    if character == "-" {
+                        isNegative = true
+                        continue
+                    } else {
+                        return nil
+                    }
+                }
+                lastIsOperator = true
+                characters.append(OperatorToken(op))
+            }
         }
+        return characters;
     }
 }
 
@@ -122,7 +176,7 @@ func <(left: OperatorToken, right: OperatorToken) -> Bool {
     return left.precedence < right.precedence
 }
 
-//shunting yard algorithm
+// Shunting yard algorithm
 public func reversePolishNotation(expression: [Any]) -> [Any] {
     //push Operators to tokenStack
     var tokenStack = Stack<OperatorToken>()
@@ -153,16 +207,17 @@ public func reversePolishNotation(expression: [Any]) -> [Any] {
     
 }
 
+
 func calculate(expression: inout [Any]) -> Any{
     var i = 0
     var result: Double = 0
-    var error: String = ""
     while i < expression.count {
         let token = expression[i]
         
         if token is OperatorToken {
             if i - 2 < expression.count && i - 2 >= 0{
                 if let left = expression[i - 2] as? Double, let right = expression[i - 1] as? Double{
+                    
                     let operatorToke: OperatorToken = token as! OperatorToken
                     switch operatorToke.operatorType {
                     case .Add:
@@ -179,11 +234,14 @@ func calculate(expression: inout [Any]) -> Any{
                         }
                     case .Modulus:
                         result = left.truncatingRemainder(dividingBy: right)
+                    default:
+                        return Error.Syntax.description
                     }
                     
-                    //expression.remove(at: i - 1)
-                    //expression.remove(at: i - 2)
-                    //expression.remove(at: i)
+                    //not sure if I can use removeSubrange, otherwise remove 3 times.
+//                    expression.remove(at: i - 2)
+//                    expression.remove(at: i - 2)
+//                    expression.remove(at: i - 2)
                     let range = i-2..<i+1
                     expression.removeSubrange(range)
                     

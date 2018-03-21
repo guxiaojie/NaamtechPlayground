@@ -50,6 +50,7 @@ The multiplication, division, and modulus have a higher precedence over the addi
 
 ```objective-c
  calculator("1 + 9 x 8 - 1 / 3")
+ calculator("3x3+3-2")
 ```
 
 space is must between characters
@@ -58,7 +59,6 @@ space is must between characters
  includes a suite of unit tests within the Tests subdirectory. These tests can be run simply be executed the test action on the platform framework you would like to test.
 - `NaamtechPlaygroundTests.swift`
 
-## Additional
-Run Project you will see buttons that you can click directly to test Calculator
+
 
 

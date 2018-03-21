@@ -33,9 +33,9 @@ class DetailsViewController: UIViewController {
         case .postion:
             textField.text = "bcdefgabcdefg"
         case .numberReport:
-            textField.text = "a_++efg 在数学与计算机科学中"
+            textField.text = "a_++efg"
         case .calculator:
-            textField.text = "3 x 3 + 3 - 2";
+            textField.text = "3x3+3-2";
             testCalculatorView.isHidden = false
         }
     }
@@ -58,14 +58,6 @@ class DetailsViewController: UIViewController {
     
     //MARK: Helper
     func covertStringToArray(_ string: String) -> Array<Character> {
-        var chars:Array<Character> = []
-        for c in string {
-            chars.append(c)
-        }
-        return chars;
-    }
-    
-    func covertCalculatorStringToArray(_ string: String) -> Array<Character> {
         var chars:Array<Character> = []
         for c in string {
             chars.append(c)
@@ -193,14 +185,17 @@ class DetailsViewController: UIViewController {
         if string.count == 0 {
             return Error.InputMissing.description
         }
+        
         let infix = Infix(input: string)
         guard infix.error == nil else {
             return infix.error!.description
         }
+        
         print("\n infix notation is:\(infix.expression)")
         var rpn = reversePolishNotation(expression: infix.expression)
         print("\n postfix notation is:\(rpn)")
         let result = calculate(expression: &rpn)
+        print("\n result is:\(result)")
         if result is Double {
             let doubleResult = result as! Double
             return String(describing: Int(doubleResult))
