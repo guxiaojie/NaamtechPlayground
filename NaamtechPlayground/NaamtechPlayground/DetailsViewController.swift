@@ -29,9 +29,9 @@ class DetailsViewController: UIViewController {
         case .postion:
             textField.text = "bcdefgabcdefg"
         case .numberReport:
-            textField.text = "a++e+fg"
+            textField.text = "a_++efg 在数学与计算机科学中"
         case .calculator:
-            textField.text = "2 x 3 + 2 + 5 + 7 - 55 - 0 - 12 - 4 / 17 / 3 x 7 + 2 - 16"
+            textField.text = "1 x 2 + 3 - 4";//2 x 3 + 2 + 5 + 7 - 55 - 0 - 12 - 4 / 17 / 3 x 7 + 2 - 16"
         }
     }
 
@@ -74,11 +74,12 @@ class DetailsViewController: UIViewController {
     
     func resursionToFindA(_ input: Array<Character>, _ index: inout Int){
         if index < input.count && index >= 0 {
-            print("search for 'a' at index: \(index)")
             if input[index] != "a" {
+                print("search for 'a' at index: \(index)")
                 index += 1
                 resursionToFindA(input, &index)
             } else {
+                print("'a' is at index: \(index) (start from 0), jump out resursion")
                 //stop resursion by using Int.max
                 var stopResursion = Int.max
                 resursionToFindA(input, &stopResursion)
@@ -89,13 +90,13 @@ class DetailsViewController: UIViewController {
         }
     }
 
-    //MARK: Problem 2
+    //MARK: Problem 2 the report
     
     func numberOfCharacter() {
         guard let targetString = textField.text else{
             resultLabel.text = "0"
             return
-        }
+        } 
         //convert string to Array<Character>
         var characters: Array = Array(targetString)
         let totalCharacters = characters.count
@@ -133,6 +134,7 @@ class DetailsViewController: UIViewController {
                 output += "\(characters[index]): \(count) \n"
             }
             
+            print("character \(characters[index]): \(count)")
             //go to next character
             index += 1
             //reset the count = 0
@@ -145,6 +147,12 @@ class DetailsViewController: UIViewController {
     //MARK: Problem 3
 
     func calculator() {
-
+        guard let targetString = textField.text else{
+            resultLabel.text = "N/A"
+            return
+        }
+        let infix = Infix(input: targetString)
+        print("infix notation is:\(infix.expression)")
+        calculate(expression: &infix.expression)
     }
 }
