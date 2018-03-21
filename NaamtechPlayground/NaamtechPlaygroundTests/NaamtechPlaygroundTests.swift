@@ -33,4 +33,23 @@ class NaamtechPlaygroundTests: XCTestCase {
         }
     }
     
+    func testProblem1() {
+        let viewController = DetailsViewController(nibName: "DetailsViewController", bundle: Bundle.main)
+        viewController.problem = Problem.postion
+        print(viewController.position("123asdf"))
+    }
+    
+    func testProblem2() {
+        let viewController = DetailsViewController(nibName: "DetailsViewController", bundle: Bundle.main)
+        viewController.problem = Problem.numberReport
+        print(viewController.countCharacter("123asdf"))
+    }
+    
+    func testProblem3() {
+        let viewController = DetailsViewController(nibName: "DetailsViewController", bundle: Bundle.main)
+        viewController.problem = Problem.numberReport
+        print(" \n ==============")
+        print(viewController.calculator("1 + 9 x 8 - 1 / 3"))
+        print("============== \n")
+    }
 }

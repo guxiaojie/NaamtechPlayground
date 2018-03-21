@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailsViewController" customModule="NaamtechPlayground" customModuleProvider="target">
             <connections>
                 <outlet property="resultLabel" destination="slo-qb-2A5" id="mhU-ZE-rkw"/>
+                <outlet property="testCalculatorView" destination="Bge-FE-rCm" id="joj-Jz-W0b"/>
                 <outlet property="textField" destination="QU7-sP-L0l" id="nsW-d8-Chi"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

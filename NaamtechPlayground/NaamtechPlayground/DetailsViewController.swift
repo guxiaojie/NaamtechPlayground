@@ -18,12 +18,16 @@ class DetailsViewController: UIViewController {
     
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var resultLabel: UILabel!
-    
+    @IBOutlet weak var testCalculatorView: UIView!
+
     var problem = Problem.postion
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //hide tesst calculator view
+        testCalculatorView.isHidden = true
+        
         //set up default test case
         switch problem {
         case .postion:
@@ -32,25 +36,27 @@ class DetailsViewController: UIViewController {
             textField.text = "a_++efg 在数学与计算机科学中"
         case .calculator:
             textField.text = "3 x 3 + 3 - 2";
+            testCalculatorView.isHidden = false
         }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func goPlay(_ sender: Any) {
         switch problem {
         case .postion:
-            position()
+            //I didn't use lowercased(), looking for 'a' instead of 'A'
+            resultLabel.text = position(textField.text ?? "")
         case .numberReport:
-            numberOfCharacter()
+            resultLabel.text = countCharacter(textField.text ?? "")
         case .calculator:
-            testCalculatorWithDefault()
+             testCalculatorWithDefault()
         }
     }
     
+    //MARK: Helper
     func covertStringToArray(_ string: String) -> Array<Character> {
         var chars:Array<Character> = []
         for c in string {
@@ -59,14 +65,20 @@ class DetailsViewController: UIViewController {
         return chars;
     }
     
+    func covertCalculatorStringToArray(_ string: String) -> Array<Character> {
+        var chars:Array<Character> = []
+        for c in string {
+            chars.append(c)
+        }
+        return chars;
+    }
+    
     //MARK: Problem 1 find the postion of a
-    func position() {
-        guard let targetString = textField.text else{
-            resultLabel.text = "N/A"
-            return
+    func position(_ targetString: String) -> String {
+        if targetString.count == 0 {
+            return "N/A"
         }
         //convert string to Array<Character>
-        //I didn't use lowercased(), cause we are looking for 'a' instead of 'A'
         //Array(targetString) works well, but it's a built in function
         //let characters: Array = Array(targetString)
         let characters: Array<Character> = covertStringToArray(targetString)
@@ -74,9 +86,9 @@ class DetailsViewController: UIViewController {
         let position: Int = resursionToFindA(characters)
         //if postion = -1 means N/A
         if position > -1 {
-            resultLabel.text = "Position: \(position + 1)"
+           return "Position: \(position + 1)"
         } else {
-            resultLabel.text = "N/A"
+           return "N/A"
         }
     }
     
@@ -93,14 +105,10 @@ class DetailsViewController: UIViewController {
 
     //MARK: Problem 2 the report
     
-    func numberOfCharacter() {
-        guard let targetString = textField.text else{
-            resultLabel.text = "0"
-            return
-        } 
+    func countCharacter(_ targetString: String) -> String{
         //convert string to Array<Character>
         //Array(targetString) works well, but it's a built in function
-        //let characters: Array = Array(targetString)
+        //var characters: Array = Array(targetString)
         var characters: Array<Character> = covertStringToArray(targetString)
         let totalCharacters = characters.count
         var output = """
@@ -108,7 +116,20 @@ class DetailsViewController: UIViewController {
             ==Report==
             """
         output += "\n"
-        //define count of each character, from index = 0
+        
+        //use dictionary get count of each character, but report is not in order.
+        //output += countCharacterByDictionary(characters)
+        
+        //use while to get count of each character
+        output += countCharacterByLoop(&characters)
+        
+        output += "Total Characters: \(totalCharacters)"
+        return output
+    }
+    
+    func countCharacterByLoop(_ characters: inout Array<Character>) -> String {
+        var output: String = ""
+        //define count of each character, loop from index = 0
         var count = 0, index = 0
         while index < characters.count {
             //find same character after
@@ -142,11 +163,10 @@ class DetailsViewController: UIViewController {
             //reset the count = 0
             count = 0
         }
-        output += "Total Characters: \(totalCharacters)"
-        resultLabel.text = output
+        return output
     }
     
-    func numberOfCharacterByDictionary(characters: Array<Character>) -> String{
+    func countCharacterByDictionary(_ characters: Array<Character>) -> String{
         var output: String = ""
         var map : Dictionary <Character, Int> = Dictionary<Character, Int>()
         for character in characters {
@@ -155,7 +175,7 @@ class DetailsViewController: UIViewController {
             map[character] = count
         }
         
-        for (character,count) in map {
+        for (character, count) in map {
             if character == " "{
                 output += "SPACE: \(count) \n"
             } else if character == "\t"{
@@ -167,17 +187,15 @@ class DetailsViewController: UIViewController {
         return output
     }
     
-    //MARK: Problem 3
+    //MARK: Problem 3 Calculator
 
-    func calculator(_ string: String) {
+    func calculator(_ string: String) -> String{
         if string.count == 0 {
-            resultLabel.text = Error.InputMissing.description
-            return
+            return Error.InputMissing.description
         }
         let infix = Infix(input: string)
         guard infix.error == nil else {
-            resultLabel.text = infix.error!.description
-            return
+            return infix.error!.description
         }
         print("\n infix notation is:\(infix.expression)")
         var rpn = reversePolishNotation(expression: infix.expression)
@@ -185,21 +203,22 @@ class DetailsViewController: UIViewController {
         let result = calculate(expression: &rpn)
         if result is Double {
             let doubleResult = result as! Double
-            resultLabel.text = String(describing: Int(doubleResult))
+            return String(describing: Int(doubleResult))
         } else if result is String {
-            resultLabel.text = String(describing: result)
+            return String(describing: result)
         }
+        return Error.InputMissing.description
     }
     
     func testCalculatorWithDefault() {
-        calculator(textField.text ?? "")
+        resultLabel.text = calculator(textField.text ?? "")
     }
     
-    //MARK: Problem 3 - TEST
+    //MARK: Problem 3 - Test cases
     
     @IBAction func testCalculator(_ sender: UIButton) {
         textField.text = sender.titleLabel?.text ?? ""
-        calculator(sender.titleLabel?.text ?? "")
+        resultLabel.text = calculator(sender.titleLabel?.text ?? "")
     }
     
 
